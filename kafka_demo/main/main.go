@@ -133,7 +133,7 @@ func clusterConsumer(wg *sync.WaitGroup,brokers, topics []string, groupId string
 	defer consumer.Close()
 
 	// trap SIGINT to trigger a shutdown
-	signals := make(chan os.Signal, 1)@
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)
 
 	// consume errors
