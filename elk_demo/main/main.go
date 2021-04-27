@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
@@ -52,6 +53,7 @@ func main() {
 
 	// 2. Index documents concurrently
 	//
+	ctx, _ := context.WithTimeout(context.Background(), 10000*time.Millisecond)
 	for i, title := range []string{"Test One", "Test Two"} {
 		wg.Add(1)
 
@@ -73,7 +75,8 @@ func main() {
 			}
 
 			// Perform the request with the client.
-			res, err := req.Do(context.Background(), es)
+			//res, err := req.Do(context.Background(), es)
+			res, err := req.Do(ctx, es)
 			if err != nil {
 				log.Fatalf("Error getting response: %s", err)
 			}
@@ -114,8 +117,10 @@ func main() {
 
 	// Perform the search request.
 	res, err = es.Search(
-		es.Search.WithContext(context.Background()),
-		es.Search.WithIndex("test"),
+		//es.Search.WithContext(context.Background()),
+		es.Search.WithContext(ctx),
+		//es.Search.WithIndex("test"),
+		es.Search.WithIndex("te*"),
 		es.Search.WithBody(&buf),
 		es.Search.WithTrackTotalHits(true),
 		es.Search.WithPretty(),
